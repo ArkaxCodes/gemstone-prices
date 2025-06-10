@@ -16,7 +16,7 @@ A modern, interactive web app to view live Hypixel SkyBlock gemstone prices, dem
 ## 🚀 Usage
 
 1. **Open the website:**  
-   [https://YOUR-USERNAME.github.io/hypixel-gemstone-tracker/](https://YOUR-USERNAME.github.io/hypixel-gemstone-tracker/)
+https://arkaxcodes.github.io/gemstone-prices/
 
 2. **Refresh prices:**  
    Click the **🔄 Refresh Prices** button to load the latest data.
