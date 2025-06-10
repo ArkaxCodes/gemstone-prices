@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Gemstone Tracker</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('https://i.pinimg.com/736x/9e/33/ed/9e33edf4f985b667ef1a4a22f9c2f57a.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #ffd700;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .gemstone-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .gemstone-card {
+            background: #23272e; /* or any solid color you like */
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gemstone-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .gem-icon {
+            width: 32px;
+            height: 32px;
+            margin-right: 10px;
+            image-rendering: pixelated;
+            object-fit: contain;
+            vertical-align: middle;
+        }
+
+        .gem-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid;
+            padding-bottom: 10px;
+        }
+
+        .price-info {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .price-label {
+            color: #aaa;
+        }
+
+        .price-value {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #1976D2;
+        }
+
+        .btn[onclick*="export"] {
+            background: #4CAF50;
+        }
+
+        .btn[onclick*="export"]:hover {
+            background: #45a049;
+        }
+
+        .section-title {
+            text-align: center;
+            color: #ffd700;
+            margin: 30px 0;
+            font-size: 1.8em;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+
+        .quality-badge {
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+
+        .flawless { background: #4CAF50; }
+        .fine { background: #2196F3; }
+        .flawed { background: #FF9800; }
+        .rough { background: #F44336; }
+
+        .gem-tier {
+            margin-bottom: 40px;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .gem-tier.hidden {
+            display: none;
+            opacity: 0;
+        }
+
+        .quality-badge.perfect { 
+            background: linear-gradient(45deg, #ffd700, #ff8c00);
+            color: #000;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+            }
+        }
+
+        .loading {
+            color: #ffd700;
+            font-size: 1.2em;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #aaa;
+            grid-column: span 2;
+        }
+
+        .last-updated {
+            font-size: 0.8em;
+            color: #888;
+            text-align: right;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .gemstone-card {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .gem-details {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 10px;
+        }
+
+        .detail-label {
+            color: #aaa;
+            font-size: 0.9em;
+            margin-right: 10px;
+        }
+
+        .detail-value {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .price-section, .market-section {
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .market-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .market-label {
+            color: #aaa;
+            flex: 1;
+        }
+
+        .market-value {
+            flex: 1;
+            text-align: right;
+        }
+
+        .market-value.buy {
+            color: #4CAF50;
+        }
+
+        .market-value.sell {
+            color: #f44336;
+        }
+
+        .price-carousel {
+            position: relative;
+            overflow: hidden;
+            padding: 10px 0;
+        }
+
+        .price-slider {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .price-slide {
+            min-width: 100%;
+        }
+
+        .carousel-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .carousel-dot.active {
+            background: #ffd700;
+        }
+
+        .price-arrows {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        .arrow-btn {
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: background 0.3s ease;
+        }
+
+        .arrow-btn:hover {
+            background: rgba(0,0,0,0.8);
+        }
+
+        /* New styles for quality carousel */
+        .quality-carousel {
+            position: relative;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .quality-slider {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .quality-slide {
+            min-width: 100%;
+        }
+
+        .quality-nav {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.8);
+            padding: 10px;
+            border-radius: 20px;
+            z-index: 100;
+        }
+
+        .quality-nav button {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quality-nav button.active {
+            background: #ffd700;
+            color: black;
+        }
+
+        .section-arrows {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: 90;
+        }
+
+        .section-arrow {
+            background: rgba(0,0,0,0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: all 0.3s ease;
+            font-size: 1.2em;
+        }
+
+        .section-arrow:hover {
+            background: #ffd700;
+            color: black;
+        }
+
+        /* Gemstone specific styles */
+        #perfect-tier .gemstone-card {
+            border-left: 5px solid #ffd700;
+        }
+        #flawless-tier .gemstone-card {
+            border-left: 5px solid #4CAF50;
+        }
+        #fine-tier .gemstone-card {
+            border-left: 5px solid #2196F3;
+        }
+        #flawed-tier .gemstone-card {
+            border-left: 5px solid #FF9800;
+        }
+        #rough-tier .gemstone-card {
+            border-left: 5px solid #F44336;
+        }
+    </style>
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>
+                <img src="https://wiki.hypixel.net/images/5/59/Minecraft_items_purple_dye.png" alt="Gemstone Icon" style="height: 1.2em; vertical-align: middle; margin-right: 10px;">
+                Gemstone Price Tracker
+            </h1>
+            <p>Track gemstone prices and find the best mining opportunities</p>
+        </header>
+
+        <div class="controls">
+            <button class="btn" onclick="refreshPrices()">🔄 Refresh Prices</button>
+            <button class="btn" onclick="exportToExcel()">📊 Export to Excel</button>
+            <a class="btn" href="https://arkaxcodes.github.io/hypixel-gemstone-tracker/" target="_blank" style="background:#888; text-decoration:none; display:inline-block;">
+                🧩 Simplified version
+            </a>
+        </div>
+
+        <p>
+            See up-to-date gemstone prices by clicking the <b>Refresh Prices</b> button below.<br>
+            (Prices are not updated automatically to avoid spamming the Bazaar API.)
+        </p>
+
+        <div class="quality-nav">
+            <button class="active" onclick="slideToQuality(0)">Perfect</button>
+            <button onclick="slideToQuality(1)">Flawless</button>
+            <button onclick="slideToQuality(2)">Fine</button>
+            <button onclick="slideToQuality(3)">Flawed</button>
+            <button onclick="slideToQuality(4)">Rough</button>
+        </div>
+
+        <div class="quality-carousel">
+            <div class="quality-slider">
+                <div class="quality-slide" id="perfect-tier">
+                    <h2 class="section-title">
+                        <img src="https://wiki.hypixel.net/images/c/c7/SkyBlock_items_perfect_ruby_gem.png" alt="Perfect Ruby" style="height:32px;vertical-align:middle;margin-right:8px;">
+                        Perfect Gemstones
+                    </h2>
+                    <div class="gemstone-grid"></div>
+                </div>
+                <div class="quality-slide" id="flawless-tier">
+                    <h2 class="section-title">
+                        <img src="https://wiki.hypixel.net/images/b/b9/SkyBlock_items_flawless_ruby_gem.png" alt="Flawless Ruby" style="height:32px;vertical-align:middle;margin-right:8px;">
+                        Flawless Gemstones
+                    </h2>
+                    <div class="gemstone-grid"></div>
+                </div>
+                <div class="quality-slide" id="fine-tier">
+                    <h2 class="section-title">
+                        <img src="https://wiki.hypixel.net/images/5/57/SkyBlock_items_fine_ruby_gem.png" alt="Fine Ruby" style="height:32px;vertical-align:middle;margin-right:8px;">
+                        Fine Gemstones
+                    </h2>
+                    <div class="gemstone-grid"></div>
+                </div>
+                <div class="quality-slide" id="flawed-tier">
+                    <h2 class="section-title">
+                        <img src="https://wiki.hypixel.net/images/5/5f/SkyBlock_items_flawed_ruby_gem.png" alt="Flawed Ruby" style="height:32px;vertical-align:middle;margin-right:8px;">
+                        Flawed Gemstones
+                    </h2>
+                    <div class="gemstone-grid"></div>
+                </div>
+                <div class="quality-slide" id="rough-tier">
+                    <h2 class="section-title">
+                        <img src="https://wiki.hypixel.net/images/b/b8/SkyBlock_items_rough_ruby_gem.png" alt="Rough Ruby" style="height:32px;vertical-align:middle;margin-right:8px;">
+                        Rough Gemstones
+                    </h2>
+                    <div class="gemstone-grid"></div>
+                </div>
+            </div>
+            <div class="section-arrows">
+                <button class="section-arrow" onclick="prevQuality()">◀</button>
+                <button class="section-arrow" onclick="nextQuality()">▶</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+// Replace the existing sections in the body with this
+document.querySelector('.container').innerHTML = `
+    <header class="header">
+        <h1>
+            <img src="https://wiki.hypixel.net/images/5/59/Minecraft_items_purple_dye.png" alt="Gemstone Icon" style="height: 1.2em; vertical-align: middle; margin-right: 10px;">
+            Gemstone Price Tracker
+        </h1>
+        <p>Track gemstone prices and find the best mining opportunities</p>
+    </header>
+
+    <div class="controls">
+        <button class="btn" onclick="refreshPrices()">🔄 Refresh Prices</button>
+        <button class="btn" onclick="exportToExcel()">📊 Export to Excel</button>
+        <a class="btn" href="https://arkaxcodes.github.io/hypixel-gemstone-tracker/" target="_blank" style="background:#888; text-decoration:none; display:inline-block;">
+            🧩 Simplified version
+        </a>
+    </div>
+
+    <p>
+        See up-to-date gemstone prices by clicking the <b>Refresh Prices</b> button below.<br>
+        (Prices are not updated automatically to avoid spamming the Bazaar API.)
+    </p>
+
+    <div class="quality-nav">
+        <button class="active" onclick="slideToQuality(0)">Perfect</button>
+        <button onclick="slideToQuality(1)">Flawless</button>
+        <button onclick="slideToQuality(2)">Fine</button>
+        <button onclick="slideToQuality(3)">Flawed</button>
+        <button onclick="slideToQuality(4)">Rough</button>
+    </div>
+
+    <div class="quality-carousel">
+        <div class="quality-slider">
+            <div class="quality-slide" id="perfect-tier">
+                <h2 class="section-title">
+                    <img src="https://wiki.hypixel.net/images/c/c7/SkyBlock_items_perfect_ruby_gem.png" alt="Perfect Ruby" style="height:32px;vertical-align:middle;margin-right:8px;">
+                    Perfect Gemstones
+                </h2>
+                <div class="gemstone-grid"></div>
+            </div>
+            <div class="quality-slide" id="flawless-tier">
+                <h2 class="section-title">
+                    <img src="https://wiki.hypixel.net/images/b/b9/SkyBlock_items_flawless_ruby_gem.png" alt="Flawless Ruby" style="height:32px;vertical-align:middle;margin-right:8px;">
+                    Flawless Gemstones
+                </h2>
+                <div class="gemstone-grid"></div>
+            </div>
+            <div class="quality-slide" id="fine-tier">
+                <h2 class="section-title">
+                    <img src="https://wiki.hypixel.net/images/5/57/SkyBlock_items_fine_ruby_gem.png" alt="Fine Ruby" style="height:32px;vertical-align:middle;margin-right:8px;">
+                    Fine Gemstones
+                </h2>
+                <div class="gemstone-grid"></div>
+            </div>
+            <div class="quality-slide" id="flawed-tier">
+                <h2 class="section-title">
+                    <img src="https://wiki.hypixel.net/images/5/5f/SkyBlock_items_flawed_ruby_gem.png" alt="Flawed Ruby" style="height:32px;vertical-align:middle;margin-right:8px;">
+                    Flawed Gemstones
+                </h2>
+                <div class="gemstone-grid"></div>
+            </div>
+            <div class="quality-slide" id="rough-tier">
+                <h2 class="section-title">
+                    <img src="https://wiki.hypixel.net/images/b/b8/SkyBlock_items_rough_ruby_gem.png" alt="Rough Ruby" style="height:32px;vertical-align:middle;margin-right:8px;">
+                    Rough Gemstones
+                </h2>
+                <div class="gemstone-grid"></div>
+            </div>
+        </div>
+        <div class="section-arrows">
+            <button class="section-arrow" onclick="prevQuality()">◀</button>
+            <button class="section-arrow" onclick="nextQuality()">▶</button>
+        </div>
+    </div>
+`;
+
+// Add these new functions for quality carousel
+let currentQuality = 0;
+const qualities = ['perfect', 'flawless', 'fine', 'flawed', 'rough'];
+
+function slideToQuality(index) {
+    currentQuality = index;
+    const slider = document.querySelector('.quality-slider');
+    slider.style.transform = `translateX(-${index * 100}%)`;
+    
+    // Update nav buttons
+    document.querySelectorAll('.quality-nav button').forEach((btn, i) => {
+        btn.classList.toggle('active', i === index);
+    });
+}
+
+function nextQuality() {
+    currentQuality = (currentQuality + 1) % qualities.length;
+    slideToQuality(currentQuality);
+}
+
+function prevQuality() {
+    currentQuality = (currentQuality - 1 + qualities.length) % qualities.length;
+    slideToQuality(currentQuality);
+}
+
+// Update the renderGemstones function
+function renderGemstones(gems = gemstones) {
+    try {
+        // Clear all grids
+        qualities.forEach(tier => {
+            const grid = document.querySelector(`#${tier}-tier .gemstone-grid`);
+            if (grid) grid.innerHTML = '';
+        });
+
+        if (gems.length === 0) {
+            qualities.forEach(tier => {
+                const grid = document.querySelector(`#${tier}-tier .gemstone-grid`);
+                if (grid) {
+                    const message = document.createElement('p');
+                    message.textContent = 'No gemstones found';
+                    message.className = 'no-results';
+                    grid.appendChild(message);
+                }
+            });
+            return;
+        }
+
+        // Group gemstones by quality
+        const groupedGems = gems.reduce((acc, gem) => {
+            const quality = gem.quality.toLowerCase();
+            if (!acc[quality]) acc[quality] = [];
+            acc[quality].push(gem);
+            return acc;
+        }, {});
+
+        // Render each quality tier
+        qualities.forEach(tier => {
+            const grid = document.querySelector(`#${tier}-tier .gemstone-grid`);
+            if (grid && groupedGems[tier]) {
+                groupedGems[tier].forEach(gem => {
+                    const card = createGemstoneCard(gem);
+                    grid.appendChild(card);
+                });
+            }
+        });
+    } catch (error) {
+        console.error('Render failed:', error);
+    }
+}
+
+// Add keyboard navigation
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') nextQuality();
+    if (e.key === 'ArrowLeft') prevQuality();
+});
+
+// Add this after the formatPrice function
+function renderGemstones(gems = gemstones) {
+    try {
+        const tiers = ['perfect', 'flawless', 'fine', 'flawed', 'rough'];
+        
+        // Clear all grids
+        tiers.forEach(tier => {
+            const section = document.getElementById(`${tier}-tier`);
+            if (section) {
+                const grid = section.querySelector('.gemstone-grid');
+                if (grid) grid.innerHTML = '';
+            }
+        });
+
+        if (gems.length === 0) {
+            tiers.forEach(tier => {
+                const section = document.getElementById(`${tier}-tier`);
+                if (section) {
+                    const grid = section.querySelector('.gemstone-grid');
+                    if (grid) {
+                        const message = document.createElement('p');
+                        message.textContent = 'No gemstones found';
+                        message.className = 'no-results';
+                        grid.appendChild(message);
+                    }
+                }
+            });
+            return;
+        }
+
+        // Group gemstones by quality
+        const groupedGems = gems.reduce((acc, gem) => {
+            const quality = gem.quality.toLowerCase();
+            if (!acc[quality]) acc[quality] = [];
+            acc[quality].push(gem);
+            return acc;
+        }, {});
+
+        // Render each tier
+        tiers.forEach(tier => {
+            const section = document.getElementById(`${tier}-tier`);
+            if (section) {
+                const grid = section.querySelector('.gemstone-grid');
+                if (grid && groupedGems[tier]) {
+                    groupedGems[tier].forEach(gem => {
+                        const card = createGemstoneCard(gem);
+                        grid.appendChild(card);
+                    });
+                }
+                // Show/hide section based on whether it has gems
+                section.style.display = groupedGems[tier]?.length ? 'block' : 'none';
+            }
+        });
+    } catch (error) {
+        console.error('Render failed:', error);
+    }
+}
+
+// Add this after sortByProfit function
+function toggleQualityFilter(quality) {
+    try {
+        if (!['all', 'perfect', 'flawless', 'fine', 'flawed', 'rough'].includes(quality)) {
+            throw new Error('Invalid quality filter');
+        }
+        
+        const filtered = quality === 'all' 
+            ? Object.values(GEMSTONE_DATA).flatMap(data => 
+                Object.entries(data.qualities).map(([q, prices]) => ({
+                    name: data.name,
+                    quality: q,
+                    icon: data.icon,
+                    location: data.location,
+                    stats: data.stats,
+                    color: data.color,
+                    ...prices,
+                    lastUpdated: new Date().toLocaleString()
+                })))
+            : gemstones.filter(g => g.quality.toLowerCase() === quality);
+            
+        renderGemstones(filtered);
+    } catch (error) {
+        console.error('Filter failed:', error);
+    }
+}
+
+// Add this before GEMSTONE_DATA constant
+let gemstones = [];
+
+// Replace existing GEMSTONE_DATA with complete list
+const GEMSTONE_DATA = {
+    'Ruby': {
+        icon: 'https://wiki.hypixel.net/images/1/15/Minecraft_items_red_stained_glass_pane.png',
+        location: 'Crystal Hollows',
+        stats: 'Health, Mining Speed',
+        color: '#ff0000',
+        mining_fortune: 20
+    },
+    'Sapphire': {
+        icon: 'https://wiki.hypixel.net/images/4/47/Minecraft_items_light_blue_stained_glass_pane.png',
+        location: 'Crystal Hollows',
+        stats: 'Intelligence, Mining Speed',
+        color: '#0095ff',
+        mining_fortune: 15
+    },
+    'Jade': {
+        icon: 'https://wiki.hypixel.net/images/2/29/Minecraft_items_lime_stained_glass_pane.png',
+        location: 'Crystal Hollows',
+        stats: 'Mining Fortune, Mining Speed',
+        color: '#00ff00',
+        mining_fortune: 20
+    },
+    'Amber': {
+        icon: 'https://wiki.hypixel.net/images/8/80/Minecraft_items_orange_stained_glass_pane.png',
+        location: 'Dwarven Mines',
+        stats: 'Health, Mining Speed',
+        color: '#ffbf00',
+        mining_fortune: 15
+    },
+    'Topaz': {
+        icon: 'https://wiki.hypixel.net/images/e/e5/Minecraft_items_yellow_stained_glass_pane.png',
+        location: 'Crystal Hollows',
+        stats: 'True Defense, Mining Speed',
+        color: '#fff700',
+        mining_fortune: 15
+    },
+    'Jasper': {
+        icon: 'https://wiki.hypixel.net/images/8/88/Minecraft_items_magenta_stained_glass_pane.png',
+        location: 'Crystal Hollows',
+        stats: 'Strength, Mining Speed',
+        color: '#ff6b00',
+        mining_fortune: 20
+    },
+    'Amethyst': {
+        icon: 'https://wiki.hypixel.net/images/2/22/Minecraft_items_purple_stained_glass_pane.png',
+        location: 'Crystal Hollows',
+        stats: 'Defense, Mining Speed',
+        color: '#9900ff',
+        mining_fortune: 15
+    },
+    'Citrine': {
+        icon: 'https://wiki.hypixel.net/images/2/2b/Minecraft_items_brown_stained_glass_pane.png',
+        location: 'Crystal Hollows',
+        stats: 'Intelligence, Mining Speed',
+        color: '#ffa600',
+        mining_fortune: 15
+    },
+    'Onyx': {
+        icon: 'https://wiki.hypixel.net/images/2/27/Minecraft_items_black_stained_glass_pane.png',
+        location: 'Crystal Hollows',
+        stats: 'Speed, Mining Speed',
+        color: '#2e2e2e',
+        mining_fortune: 20
+    },
+    'Peridot': {
+        icon: 'https://wiki.hypixel.net/images/1/15/Minecraft_items_green_stained_glass_pane.png',
+        location: 'Crystal Hollows',
+        stats: 'Strength, Mining Speed',
+        color: '#7cba3d',
+        mining_fortune: 15
+    },
+    'Aquamarine': {
+        icon: 'https://wiki.hypixel.net/images/8/8f/Minecraft_items_blue_stained_glass_pane.png',
+        location: 'Crystal Hollows',
+        stats: 'Intelligence, Mining Speed',
+        color: '#3ab3da',
+        mining_fortune: 15
+    },
+    'Opal': {
+        icon: 'https://wiki.hypixel.net/images/0/00/Minecraft_items_white_stained_glass_pane.png',
+        location: 'Crystal Hollows',
+        stats: 'True Defense, Mining Speed',
+        color: '#e8e8e8',
+        mining_fortune: 15
+    }
+};
+
+const HYPIXEL_API_URL = 'https://api.hypixel.net/skyblock/bazaar';
+
+// Update the GEMSTONE_IDS mapping to match Hypixel's item IDs
+const GEMSTONE_IDS = {
+    'Ruby': {
+        perfect: 'PERFECT_RUBY_GEM',
+        flawless: 'FLAWLESS_RUBY_GEM',
+        fine: 'FINE_RUBY_GEM',
+        flawed: 'FLAWED_RUBY_GEM',
+        rough: 'ROUGH_RUBY_GEM'
+    },
+    'Sapphire': {
+        perfect: 'PERFECT_SAPPHIRE_GEM',
+        flawless: 'FLAWLESS_SAPPHIRE_GEM',
+        fine: 'FINE_SAPPHIRE_GEM',
+        flawed: 'FLAWED_SAPPHIRE_GEM',
+        rough: 'ROUGH_SAPPHIRE_GEM'
+    },
+    'Jade': {
+        perfect: 'PERFECT_JADE_GEM',
+        flawless: 'FLAWLESS_JADE_GEM',
+        fine: 'FINE_JADE_GEM',
+        flawed: 'FLAWED_JADE_GEM',
+        rough: 'ROUGH_JADE_GEM'
+    },
+    'Amber': {
+        perfect: 'PERFECT_AMBER_GEM',
+        flawless: 'FLAWLESS_AMBER_GEM',
+        fine: 'FINE_AMBER_GEM',
+        flawed: 'FLAWED_AMBER_GEM',
+        rough: 'ROUGH_AMBER_GEM'
+    },
+    'Topaz': {
+        perfect: 'PERFECT_TOPAZ_GEM',
+        flawless: 'FLAWLESS_TOPAZ_GEM',
+        fine: 'FINE_TOPAZ_GEM',
+        flawed: 'FLAWED_TOPAZ_GEM',
+        rough: 'ROUGH_TOPAZ_GEM'
+    },
+    'Jasper': {
+        perfect: 'PERFECT_JASPER_GEM',
+        flawless: 'FLAWLESS_JASPER_GEM',
+        fine: 'FINE_JASPER_GEM',
+        flawed: 'FLAWED_JASPER_GEM',
+        rough: 'ROUGH_JASPER_GEM'
+    },
+    'Amethyst': {
+        perfect: 'PERFECT_AMETHYST_GEM',
+        flawless: 'FLAWLESS_AMETHYST_GEM',
+        fine: 'FINE_AMETHYST_GEM',
+        flawed: 'FLAWED_AMETHYST_GEM',
+        rough: 'ROUGH_AMETHYST_GEM'
+    },
+    'Citrine': {
+        perfect: 'PERFECT_CITRINE_GEM',
+        flawless: 'FLAWLESS_CITRINE_GEM',
+        fine: 'FINE_CITRINE_GEM',
+        flawed: 'FLAWED_CITRINE_GEM',
+        rough: 'ROUGH_CITRINE_GEM'
+    },
+    'Onyx': {
+        perfect: 'PERFECT_ONYX_GEM',
+        flawless: 'FLAWLESS_ONYX_GEM',
+        fine: 'FINE_ONYX_GEM',
+        flawed: 'FLAWED_ONYX_GEM',
+        rough: 'ROUGH_ONYX_GEM'
+    },
+    'Peridot': {
+        perfect: 'PERFECT_PERIDOT_GEM',
+        flawless: 'FLAWLESS_PERIDOT_GEM',
+        fine: 'FINE_PERIDOT_GEM',
+        flawed: 'FLAWED_PERIDOT_GEM',
+        rough: 'ROUGH_PERIDOT_GEM'
+    },
+    'Aquamarine': {
+        perfect: 'PERFECT_AQUAMARINE_GEM',
+        flawless: 'FLAWLESS_AQUAMARINE_GEM',
+        fine: 'FINE_AQUAMARINE_GEM',
+        flawed: 'FLAWED_AQUAMARINE_GEM',
+        rough: 'ROUGH_AQUAMARINE_GEM'
+    },
+    'Opal': {
+        perfect: 'PERFECT_OPAL_GEM',
+        flawless: 'FLAWLESS_OPAL_GEM',
+        fine: 'FINE_OPAL_GEM',
+        flawed: 'FLAWED_OPAL_GEM',
+        rough: 'ROUGH_OPAL_GEM'
+    }
+};
+
+// Update refreshPrices function to fetch from Hypixel API
+async function refreshPrices() {
+    try {
+        const loading = document.createElement('div');
+        loading.textContent = 'Fetching live prices from Hypixel Bazaar...';
+        loading.className = 'loading';
+        document.querySelector('.container').appendChild(loading);
+
+        const response = await fetch(HYPIXEL_API_URL);
+        if (!response.ok) throw new Error('Failed to fetch from Hypixel API');
+        
+        const data = await response.json();
+        if (!data.success) throw new Error('Hypixel API returned an error');
+
+        let newGemstones = [];
+        
+        Object.entries(GEMSTONE_IDS).forEach(([gemName, qualities]) => {
+            Object.entries(qualities).forEach(([quality, itemId]) => {
+                if (data.products[itemId]) {
+                    const product = data.products[itemId];
+                    
+                    // Get actual prices from buy/sell orders
+                    const sellPrice = product.sell_summary[0]?.pricePerUnit || 0; // Instant buy price
+                    const buyPrice = product.buy_summary[0]?.pricePerUnit || 0;   // Instant sell price
+                    const highestBuyPrice = Math.max(...product.buy_summary.map(o => o.pricePerUnit), 0);
+                    const highestSellPrice = Math.max(...product.sell_summary.map(o => o.pricePerUnit), 0);
+                    
+                    newGemstones.push({
+                        name: gemName,
+                        quality: quality,
+                        icon: GEMSTONE_DATA[gemName].icon,
+                        location: GEMSTONE_DATA[gemName].location,
+                        stats: GEMSTONE_DATA[gemName].stats,
+                        color: GEMSTONE_DATA[gemName].color,
+                        mining_fortune: GEMSTONE_DATA[gemName].mining_fortune,
+                        buyPrice: Math.floor(buyPrice),
+                        sellPrice: Math.ceil(sellPrice),
+                        highestBuyPrice: Math.ceil(highestBuyPrice),
+                        highestSellPrice: Math.floor(highestSellPrice),
+                        volume24h: product.quick_status.buyVolume,
+                        sellVolume24h: product.quick_status.sellVolume,
+                        orders: {
+                            buy: product.buy_summary.length,
+                            sell: product.sell_summary.length
+                        },
+                        lastUpdated: new Date().toLocaleString()
+                    });
+                }
+            });
+        });
+
+        gemstones = newGemstones;
+        renderGemstones();
+
+    } catch (error) {
+        console.error('Failed to fetch prices:', error);
+        document.querySelector('.loading').textContent = 
+            'Failed to fetch prices. Click refresh to try again.';
+    } finally {
+        setTimeout(() => {
+            const loading = document.querySelector('.loading');
+            if (loading) loading.remove();
+        }, 2000);
+    }
+}
+
+// Update createGemstoneCard function to show more details
+function createGemstoneCard(gem) {
+    try {
+        const card = document.createElement('div');
+        card.className = 'gemstone-card';
+        
+        const prices = [
+            { label: 'Current Price', buy: gem.buyPrice, sell: gem.sellPrice },
+            { label: '24h Average', buy: gem.buyPrice * 0.98, sell: gem.sellPrice * 1.02 },
+            { 
+                label: 'Highest Sell/Instant Sell',
+                buy: gem.highestBuyPrice ?? gem.buyPrice,
+                sell: gem.highestSellPrice ?? gem.sellPrice
+            }
+        ];
+
+        const priceCarousel = document.createElement('div');
+        priceCarousel.className = 'price-carousel';
+        
+        const priceSlider = document.createElement('div');
+        priceSlider.className = 'price-slider';
+        
+        const getFastSellChance = (buyers) => {
+            if (buyers >= 20) return '<span style="color:#4CAF50;">High</span>';
+            if (buyers >= 5) return '<span style="color:#FF9800;">Medium</span>';
+            return '<span style="color:#F44336;">Low</span>';
+        };
+
+        prices.forEach((price, index) => {
+            const spread = price.buy - price.sell;
+            const spreadPercentage = ((spread / price.buy) * 100).toFixed(1);
+            const spreadColor = spread > 0 ? '#4CAF50' : '#F44336';
+            
+            const slide = document.createElement('div');
+            slide.className = 'price-slide';
+            slide.innerHTML = `
+                <h4 style="color: #ffd700; margin-bottom: 10px;">${price.label}</h4>
+                <div class="price-section">
+                    <div class="price-row">
+                        <span class="price-label">${index === 2 ? 'Highest Sell Order:' : 'Sell Order:'}</span>
+                        <span class="price-value">${formatPrice(price.buy)}</span>
+                    </div>
+                    <div class="price-row">
+                        <span class="price-label">${index === 2 ? 'Highest Insta Sell:' : 'Insta Sell:'}</span>
+                        <span class="price-value">${formatPrice(price.sell)}</span>
+                    </div>
+                    <div class="price-row">
+                        <span class="price-label">Fast Sell Order Chance:</span>
+                        <span class="price-value">
+                            ${getFastSellChance(gem.orders?.buy ?? 0)}
+                        </span>
+                    </div>
+                </div>
+            `;
+            priceSlider.appendChild(slide);
+        });
+
+        const controls = document.createElement('div');
+        controls.className = 'carousel-controls';
+        prices.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.className = `carousel-dot${index === 0 ? ' active' : ''}`;
+            dot.onclick = () => slidePrice(card, index);
+            controls.appendChild(dot);
+        });
+
+        const arrows = document.createElement('div');
+        arrows.className = 'price-arrows';
+        arrows.innerHTML = `
+            <button class="arrow-btn" onclick="slidePrev(this.closest('.gemstone-card'))">◀</button>
+            <button class="arrow-btn" onclick="slideNext(this.closest('.gemstone-card'))">▶</button>
+        `;
+
+        priceCarousel.appendChild(priceSlider);
+        priceCarousel.appendChild(controls);
+        priceCarousel.appendChild(arrows);
+
+        card.innerHTML = `
+            <div class="gem-header" style="border-bottom: 2px solid ${gem.color}">
+                <img src="${gem.icon}" alt="${gem.name} icon" class="gem-icon">
+                <h3>${gem.name}</h3>
+                <span class="quality-badge ${gem.quality.toLowerCase()}">${gem.quality}</span>
+            </div>
+            <div class="price-info">
+                <div class="gem-details">
+                    <span class="detail-label">Stats:</span>
+                    <span class="detail-value">${gem.stats}</span>
+                </div>
+                <div class="gem-details">
+                    <span class="detail-label">Orders:</span>
+                    <span class="detail-value">
+                        <span style="color:#4CAF50;">Buy Orders: ${gem.orders?.buy ?? 0}</span>
+                        &nbsp;|&nbsp;
+                        <span style="color:#F44336;">Sell Orders: ${gem.orders?.sell ?? 0}</span>
+                    </span>
+                </div>
+                <div class="gem-details">
+                    <span class="detail-label">24h Volume:</span>
+                    <span class="detail-value">
+                        <span style="color:#4CAF50;">Bought: ${formatNumber(gem.volume24h ?? 0)}</span>
+                        &nbsp;|&nbsp;
+                        <span style="color:#F44336;">Sold: ${formatNumber(gem.sellVolume24h ?? 0)}</span>
+                    </span>
+                </div>
+            </div>
+        `;
+        
+        card.querySelector('.price-info').appendChild(priceCarousel);
+        
+        return card;
+    } catch (error) {
+        console.error('Failed to create card:', error);
+        return document.createElement('div');
+    }
+}
+
+// Add helper function for time formatting
+function getTimeAgo(date) {
+    const seconds = Math.floor((new Date() - date) / 1000);
+    
+    let interval = Math.floor(seconds / 31536000);
+    if (interval > 1) return interval + ' years ago';
+    
+    interval = Math.floor(seconds / 2592000);
+    if (interval > 1) return interval + ' months ago';
+    
+    interval = Math.floor(seconds / 86400);
+    if (interval > 1) return interval + ' days ago';
+    
+    interval = Math.floor(seconds / 3600);
+    if (interval > 1) return interval + ' hours ago';
+    
+    interval = Math.floor(seconds / 60);
+    if (interval > 1) return interval + ' minutes ago';
+    
+    return Math.floor(seconds) + ' seconds ago';
+}
+
+// Add helper function for number formatting
+function formatNumber(num) {
+    if (!num) return '0';
+    return num.toLocaleString();
+}
+
+// Improved price formatter with input validation
+function formatPrice(price) {
+    try {
+        const num = Number(price);
+        if (isNaN(num)) return '0';
+        
+        if (num >= 1000000) {
+            return `${(num / 1000000).toFixed(1)}M`;
+        } else if (num >= 1000) {
+            return `${(num / 1000).toFixed(1)}K`;
+        }
+        return num.toLocaleString();
+    } catch (error) {
+        console.error('Price format failed:', error);
+        return '0';
+    }
+}
+
+// Add helper function for gem icons
+function getGemIcon(gemName) {
+    const icons = {
+        'Ruby': '🔴',
+        'Jasper': '🟤',
+        'Amethyst': '💜',
+        'Amber': '🟡',
+        'Opal': '⚪',
+        'Peridot': '🟢',
+        'Aquamarine': '💠',
+        'Topaz': '🟨',
+        'Sapphire': '🔷',
+        'Jade': '💚'
+    };
+    return icons[gemName] || '💎';
+}
+
+// Initialize the display when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    try {
+        renderGemstones();
+        startAutoRotation();
+    } catch (error) {
+        console.error('Initialization failed:', error);
+    }
+});
+
+// Add these new functions for carousel controls
+function slidePrice(card, index) {
+    const slider = card.querySelector('.price-slider');
+    const dots = card.querySelectorAll('.carousel-dot');
+    
+    slider.style.transform = `translateX(-${index * 100}%)`;
+    dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+    });
+}
+
+function slidePrev(card) {
+    const slider = card.querySelector('.price-slider');
+    const dots = card.querySelectorAll('.carousel-dot');
+    const currentIndex = Array.from(dots).findIndex(dot => dot.classList.contains('active'));
+    const newIndex = (currentIndex - 1 + dots.length) % dots.length;
+    slidePrice(card, newIndex);
+}
+
+function slideNext(card) {
+    const slider = card.querySelector('.price-slider');
+    const dots = card.querySelectorAll('.carousel-dot');
+    const currentIndex = Array.from(dots).findIndex(dot => dot.classList.contains('active'));
+    const newIndex = (currentIndex + 1) % dots.length;
+    slidePrice(card, newIndex);
+}
+
+// Add auto-rotation
+function startAutoRotation() {
+    setInterval(() => {
+        document.querySelectorAll('.gemstone-card').forEach(card => {
+            slideNext(card);
+        });
+    }, 5000); // Rotate every 5 seconds
+}
+
+// Initialize auto-rotation when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    try {
+        renderGemstones();
+        startAutoRotation();
+    } catch (error) {
+        console.error('Initialization failed:', error);
+    }
+});
+
+// Add Excel export function
+function exportToExcel() {
+    try {
+        // Create worksheet data
+        const wsData = [
+            // Headers
+            ['Gemstone', 'Quality', 'Sell Order', 'Insta Sell', 'Market Spread', 'Stats', 'Last Updated']
+        ];
+
+        // Add data for each gemstone
+        gemstones.forEach(gem => {
+            const spread = gem.buyPrice - gem.sellPrice;
+            wsData.push([
+                gem.name,
+                gem.quality,
+                formatPrice(gem.buyPrice),
+                formatPrice(gem.sellPrice),
+                formatPrice(Math.abs(spread)),
+                gem.stats,
+                gem.lastUpdated
+            ]);
+        });
+
+        // Create workbook
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+        // Add worksheet to workbook
+        XLSX.utils.book_append_sheet(wb, ws, 'Gemstone Prices');
+
+        // Save file
+        const fileName = `gemstone_prices_${new Date().toISOString().split('T')[0]}.xlsx`;
+        XLSX.writeFile(wb, fileName);
+    } catch (error) {
+        console.error('Export failed:', error);
+        alert('Failed to export data. Please try again.');
+    }
+}
+    </script>
+</body>
+</html>
