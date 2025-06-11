@@ -399,6 +399,181 @@
         #rough-tier .gemstone-card {
             border-left: 5px solid #F44336;
         }
+
+        /* Visually upgraded Discord embed sender */
+        .discord-embed-sender {
+            background: rgba(30,34,40,0.95);
+            border-radius: 14px;
+            box-shadow: 0 4px 24px #000a;
+            padding: 22px 28px 18px 28px;
+            max-width: 540px;
+            margin: 32px auto 24px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.5s;
+        }
+
+        .discord-header {
+            display: flex;
+            align-items: center;
+            font-size: 1.25em;
+            font-weight: 600;
+            color: #7289da;
+            margin-bottom: 18px;
+            gap: 10px;
+        }
+
+        .discord-icon {
+            width: 32px;
+            height: 32px;
+            vertical-align: middle;
+        }
+
+        .discord-fields {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .discord-fields input,
+        .discord-fields select {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background: #23272e;
+            color: #fff;
+            font-size: 1em;
+            outline: none;
+            min-width: 180px;
+            transition: border 0.2s;
+        }
+
+        .discord-fields input:focus,
+        .discord-fields select:focus {
+            border-color: #7289da;
+        }
+
+        .discord-fields button {
+            background: linear-gradient(90deg,#7289da 60%,#5865f2 100%);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 22px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px #0004;
+        }
+
+        .discord-fields button:hover {
+            background: linear-gradient(90deg,#5865f2 60%,#7289da 100%);
+            box-shadow: 0 4px 16px #0006;
+        }
+
+        .discord-hint {
+            color: #aaa;
+            font-size: 0.98em;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        @media (max-width: 700px) {
+            .discord-embed-sender {
+                padding: 16px 6px 12px 6px;
+                max-width: 98vw;
+            }
+            .discord-fields {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .discord-fields input,
+            .discord-fields select {
+                min-width: 0;
+                width: 100%;
+            }
+        }
+
+        /* New styles for webhook help */
+        .webhook-help-container {
+          display: flex;
+          justify-content: center;
+          margin-top: -10px;
+          margin-bottom: 24px;
+        }
+        .webhook-help-btn {
+          background: linear-gradient(90deg,#ffd700 60%,#ff8c00 100%);
+          color: #23272e;
+          border: none;
+          border-radius: 8px;
+          padding: 9px 28px;
+          font-size: 1.08em;
+          font-weight: 700;
+          cursor: pointer;
+          box-shadow: 0 2px 12px #0003;
+          transition: background 0.2s, box-shadow 0.2s;
+          margin: 0 auto;
+          display: block;
+        }
+        .webhook-help-btn:hover {
+          background: linear-gradient(90deg,#ff8c00 60%,#ffd700 100%);
+          color: #23272e;
+          box-shadow: 0 4px 24px #0005;
+        }
+        .webhook-modal-bg {
+          position: fixed;
+          top: 0; left: 0; width: 100vw; height: 100vh;
+          background: rgba(0,0,0,0.55);
+          z-index: 9999;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .webhook-modal {
+          background: #23272e;
+          color: #fff;
+          border-radius: 16px;
+          max-width: 420px;
+          width: 92vw;
+          padding: 32px 28px 22px 28px;
+          box-shadow: 0 8px 32px #000a;
+          position: relative;
+          animation: fadeIn 0.3s;
+          text-align: left;
+        }
+        .webhook-modal h2 {
+          color: #ffd700;
+          margin-bottom: 18px;
+          text-align: center;
+        }
+        .webhook-modal ol {
+          margin-left: 1.2em;
+          margin-bottom: 0;
+        }
+        .webhook-modal-close {
+          position: absolute;
+          top: 12px; right: 18px;
+          background: #ffd700;
+          color: #23272e;
+          border: none;
+          border-radius: 50%;
+          width: 32px; height: 32px;
+          font-size: 1.3em;
+          font-weight: bold;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+        .webhook-modal-close:hover {
+          background: #ff8c00;
+        }
+        @media (max-width: 600px) {
+          .webhook-modal { padding: 18px 6vw 14px 6vw; }
+          .webhook-modal h2 { font-size: 1.1em; }
+        }
     </style>
     <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
 </head>
@@ -475,6 +650,61 @@
                 <button class="section-arrow" onclick="prevQuality()">◀</button>
                 <button class="section-arrow" onclick="nextQuality()">▶</button>
             </div>
+        </div>
+
+        <!-- Visually upgraded Discord embed sender -->
+        <div class="discord-embed-sender">
+          <div class="discord-header">
+            <img src="https://static.wikia.nocookie.net/hypixel-skyblock/images/e/e5/Helmet_of_Divan.png/revision/latest?cb=20210716003226" alt="Divan Helmet" class="discord-icon">
+            <span>Send Gemstone Info to Discord</span>
+          </div>
+          <div class="discord-fields">
+            <input id="webhook-url" type="text" placeholder="Discord Webhook URL" autocomplete="off">
+            <select id="gem-name">
+              <option value="Ruby">Ruby</option>
+              <option value="Sapphire">Sapphire</option>
+              <option value="Jade">Jade</option>
+              <option value="Amber">Amber</option>
+              <option value="Topaz">Topaz</option>
+              <option value="Jasper">Jasper</option>
+              <option value="Amethyst">Amethyst</option>
+              <option value="Citrine">Citrine</option>
+              <option value="Onyx">Onyx</option>
+              <option value="Peridot">Peridot</option>
+              <option value="Aquamarine">Aquamarine</option>
+              <option value="Opal">Opal</option>
+            </select>
+            <select id="gem-quality">
+              <option value="perfect">Perfect</option>
+              <option value="flawless">Flawless</option>
+              <option value="fine">Fine</option>
+              <option value="flawed">Flawed</option>
+            </select>
+            <button id="send-embed">Send Discord Embed</button>
+          </div>
+          <div class="discord-hint">
+            <span>Paste your Discord webhook, select a gemstone and quality, then click to send</span>
+          </div>
+        </div>
+
+        <div class="webhook-help-container">
+          <button class="webhook-help-btn" id="show-webhook-help">❓ How to send webhook</button>
+        </div>
+        <div class="webhook-modal-bg" id="webhook-modal-bg" style="display:none;">
+          <div class="webhook-modal">
+            <button class="webhook-modal-close" id="close-webhook-help">&times;</button>
+            <h2>How to Send a Discord Webhook</h2>
+            <ol>
+              <li>Go to your Discord server and create a <b>webhook</b> in any channel’s settings (<b>Integrations &rarr; Webhooks</b>).</li>
+              <li>Copy the <b>Webhook URL</b> Discord gives you.</li>
+              <li>Paste it into the <b>Discord Webhook URL</b> field above.</li>
+              <li>Select your gemstone and quality, then click <b>Send Discord Embed</b>.</li>
+              <li>Your Discord channel will receive a stylish embed with live gemstone info!</li>
+            </ol>
+            <div style="margin-top:18px;text-align:center;">
+              <img src="https://static.wikia.nocookie.net/hypixel-skyblock/images/e/e5/Helmet_of_Divan.png/revision/latest?cb=20210716003226" alt="Divan Helmet" style="height:48px;">
+            </div>
+          </div>
         </div>
     </div>
 
@@ -553,7 +783,62 @@ document.querySelector('.container').innerHTML = `
             <button class="section-arrow" onclick="nextQuality()">▶</button>
         </div>
     </div>
-`;
+
+    <!-- Visually upgraded Discord embed sender -->
+    <div class="discord-embed-sender">
+      <div class="discord-header">
+        <img src="https://static.wikia.nocookie.net/hypixel-skyblock/images/e/e5/Helmet_of_Divan.png/revision/latest?cb=20210716003226" alt="Divan Helmet" class="discord-icon">
+        <span>Send Gemstone Info to Discord</span>
+      </div>
+      <div class="discord-fields">
+        <input id="webhook-url" type="text" placeholder="Discord Webhook URL" autocomplete="off">
+        <select id="gem-name">
+          <option value="Ruby">Ruby</option>
+          <option value="Sapphire">Sapphire</option>
+          <option value="Jade">Jade</option>
+          <option value="Amber">Amber</option>
+          <option value="Topaz">Topaz</option>
+          <option value="Jasper">Jasper</option>
+          <option value="Amethyst">Amethyst</option>
+          <option value="Citrine">Citrine</option>
+          <option value="Onyx">Onyx</option>
+          <option value="Peridot">Peridot</option>
+          <option value="Aquamarine">Aquamarine</option>
+          <option value="Opal">Opal</option>
+        </select>
+        <select id="gem-quality">
+          <option value="perfect">Perfect</option>
+          <option value="flawless">Flawless</option>
+          <option value="fine">Fine</option>
+          <option value="flawed">Flawed</option>
+        </select>
+        <button id="send-embed">Send Discord Embed</button>
+      </div>
+      <div class="discord-hint">
+        <span>Paste your Discord webhook, select a gemstone and quality, then click to send</span>
+      </div>
+    </div>
+
+    <div class="webhook-help-container">
+      <button class="webhook-help-btn" id="show-webhook-help">❓ How to send webhook</button>
+    </div>
+    <div class="webhook-modal-bg" id="webhook-modal-bg" style="display:none;">
+      <div class="webhook-modal">
+        <button class="webhook-modal-close" id="close-webhook-help">&times;</button>
+        <h2>How to Send a Discord Webhook</h2>
+        <ol>
+          <li>Go to your Discord server and create a <b>webhook</b> in any channel’s settings (<b>Integrations &rarr; Webhooks</b>).</li>
+          <li>Copy the <b>Webhook URL</b> Discord gives you.</li>
+          <li>Paste it into the <b>Discord Webhook URL</b> field above.</li>
+          <li>Select your gemstone and quality, then click <b>Send Discord Embed</b>.</li>
+          <li>Your Discord channel will receive a stylish embed with live gemstone info!</li>
+        </ol>
+        <div style="margin-top:18px;text-align:center;">
+          <img src="https://static.wikia.nocookie.net/hypixel-skyblock/images/e/e5/Helmet_of_Divan.png/revision/latest?cb=20210716003226" alt="Divan Helmet" style="height:48px;">
+        </div>
+      </div>
+    </div>
+    `;
 
 // Add these new functions for quality carousel
 let currentQuality = 0;
@@ -1236,6 +1521,97 @@ function exportToExcel() {
         alert('Failed to export data. Please try again.');
     }
 }
+
+// Add Discord webhook functionality
+document.getElementById('send-embed').onclick = async function() {
+    const webhookUrl = document.getElementById('webhook-url').value.trim();
+    const gemNameInput = document.getElementById('gem-name').value.trim();
+    const gemQualityInput = document.getElementById('gem-quality').value.trim().toLowerCase();
+
+    if (!webhookUrl.startsWith('https://discord.com/api/webhooks/')) {
+        alert('Please enter a valid Discord webhook URL!');
+        return;
+    }
+    if (!gemNameInput) {
+        alert('Please select a gemstone!');
+        return;
+    }
+    if (!gemQualityInput) {
+        alert('Please select a gemstone quality!');
+        return;
+    }
+
+    // Find the gemstone with the requested name and quality
+    const gem = gemstones.find(g =>
+        g.name === gemNameInput &&
+        g.quality.toLowerCase() === gemQualityInput
+    );
+
+    if (!gem) {
+        alert('Gemstone not found! Make sure the name and quality are correct and data is loaded.');
+        return;
+    }
+
+    // Emoji for each gem
+    const gemEmojis = {
+        'Ruby': '🔴', 'Sapphire': '🔷', 'Jade': '💚', 'Amber': '🟡', 'Topaz': '🟨',
+        'Jasper': '🟤', 'Amethyst': '💜', 'Citrine': '🟠', 'Onyx': '⚫', 'Peridot': '🟢',
+        'Aquamarine': '💠', 'Opal': '⚪'
+    };
+    const emoji = gemEmojis[gem.name] || '💎';
+
+    const spread = gem.buyPrice - gem.sellPrice;
+
+    const embed = {
+        title: `${emoji} ${gem.name} (${gem.quality.charAt(0).toUpperCase() + gem.quality.slice(1)})`,
+        color: parseInt(gem.color.replace('#', ''), 16) || 0xffd700,
+        thumbnail: { url: gem.icon },
+        description: `**${gem.stats}** Gemstone\n━━━━━━━━━━━━━━━━━━\n[🔗 Open Gemstone Tracker](https://arkaxcodes.github.io/gemstone-prices/)`,
+        fields: [
+            { name: "💰 Sell Order", value: `**${formatPrice(gem.buyPrice)}** coins`, inline: true },
+            { name: "⚡ Insta Sell", value: `**${formatPrice(gem.sellPrice)}** coins`, inline: true },
+            { name: "📈 Market Spread", value: `**${formatPrice(Math.abs(spread))}** coins`, inline: true },
+            { name: "🛒 24h Buy Volume", value: `**${formatNumber(gem.volume24h)}**`, inline: true },
+            { name: "📦 24h Sell Volume", value: `**${formatNumber(gem.sellVolume24h)}**`, inline: true },
+            { name: "📊 Orders", value: `Buy: **${gem.orders?.buy ?? 0}** / Sell: **${gem.orders?.sell ?? 0}**`, inline: true },
+            { name: "🕒 Last Updated", value: gem.lastUpdated, inline: false }
+        ],
+        footer: { text: "💎 Hypixel Gemstone Price Tracker", icon_url: "https://wiki.hypixel.net/images/5/59/Minecraft_items_purple_dye.png" },
+        timestamp: new Date().toISOString()
+    };
+
+    const payload = {
+        username: "Gemstone Tracker",
+        avatar_url: gem.icon,
+        embeds: [embed]
+    };
+
+    try {
+        const res = await fetch(webhookUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+            alert(`Embed for ${gem.name} (${gem.quality}) sent to Discord!`);
+        } else {
+            alert("Failed to send webhook: " + res.status);
+        }
+    } catch (e) {
+        alert("Error sending webhook: " + e.message);
+    }
+};
+
+// Add modal functionality for webhook help
+document.getElementById('show-webhook-help').onclick = function() {
+  document.getElementById('webhook-modal-bg').style.display = 'flex';
+};
+document.getElementById('close-webhook-help').onclick = function() {
+  document.getElementById('webhook-modal-bg').style.display = 'none';
+};
+document.getElementById('webhook-modal-bg').onclick = function(e) {
+  if (e.target === this) this.style.display = 'none';
+};
     </script>
 </body>
 </html>
